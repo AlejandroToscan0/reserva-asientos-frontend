@@ -9,7 +9,7 @@ const App = () => {
   useEffect(() => {
     const fetchAsientos = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/asientos");
+        const response = await axios.get("http://localhost:3000/api/asientos");
         setAsientos(response.data); // Guardar los datos obtenidos en el estado
       } catch (error) {
         console.error("Error al obtener los asientos:", error.message);
@@ -23,7 +23,7 @@ const App = () => {
   // Reservar un asiento
   const reservarAsiento = async (numero) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/asientos/reservar", {
+      const response = await axios.post("http://localhost:3000/api/asientos/reservar", {
         numero,
         reservadoPor: "Usuario",
       });
@@ -44,7 +44,7 @@ const App = () => {
   // Liberar un asiento
   const liberarAsiento = async (numero) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/asientos/liberar", {
+      const response = await axios.post("http://localhost:3000/api/asientos/liberar", {
         numero,
       });
       alert(response.data.message); // Mostrar mensaje del backend

@@ -11,8 +11,8 @@ app.use(bodyParser.json());
 // Crear conexión a la base de datos MySQL
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "rootroot",
+  user: "admin",
+  password: "admin",
   database: "reserva_asientos",
 });
 
