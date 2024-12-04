@@ -1,14 +1,14 @@
 const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
-// Middleware para manejar las solicitudes JSON
+app.use(cors());
 app.use(bodyParser.json());
 
-// Crear conexión a la base de datos MySQL
 const db = mysql.createConnection({
   host: "localhost",
   user: "admin",
@@ -21,20 +21,19 @@ db.connect((err) => {
   console.log("Conectado a la base de datos");
 });
 
-// Ruta para obtener todos los asientos
 app.get("/api/asientos", (req, res) => {
   db.query("SELECT * FROM asientos", (err, results) => {
     if (err) {
+      console.error("Error al obtener los asientos:", err);
       return res.status(500).send("Error al obtener los asientos");
     }
     res.json(results);
   });
 });
 
-// Ruta para reservar un asiento por número
 app.post("/api/asientos/reservar/:numero", (req, res) => {
-  const { numero } = req.params; // Número del asiento de la URL
-  const { reservadoPor } = req.body; // Nombre del usuario desde el body
+  const { numero } = req.params; 
+  const { reservadoPor } = req.body; 
 
   db.query(
     "UPDATE asientos SET disponible = 0, reservadoPor = ? WHERE Numero = ?",
@@ -51,8 +50,6 @@ app.post("/api/asientos/reservar/:numero", (req, res) => {
   );
 });
 
-
-// Ruta para liberar un asiento por número
 app.post("/api/asientos/liberar/:numero", (req, res) => {
   const { numero } = req.params;  // Usar el parámetro de la URL
 
@@ -71,7 +68,9 @@ app.post("/api/asientos/liberar/:numero", (req, res) => {
   );
 });
 
-// Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor backend escuchando en el puerto ${port}`);
 });
+
+
+

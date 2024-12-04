@@ -17,21 +17,21 @@ const App = () => {
         alert("No se pudieron cargar los asientos.");
       }
     };
-
-    fetchAsientos(); // Llamar a la función al montar el componente
+  
+    fetchAsientos(); 
   }, []);
-
+  
   // Reservar un asiento
   const reservarAsiento = async (numero) => {
     try {
       const response = await axios.post(`http://localhost:3000/api/asientos/reservar/${numero}`, {
-        reservadoPor: "Usuario",
+        reservadoPor: "Juanito",
       });
-      alert(response.data.message); // Mostrar mensaje del backend
+      alert(response.data.message); 
       setAsientos((prev) =>
         prev.map((asiento) =>
           asiento.Numero === numero
-            ? { ...asiento, Disponible: 0, reservadoPor: "Usuario" }
+            ? { ...asiento, Disponible: 0, reservadoPor: "Juanito" }
             : asiento
         )
       );
@@ -45,7 +45,7 @@ const App = () => {
   const liberarAsiento = async (numero) => {
     try {
       const response = await axios.post(`http://localhost:3000/api/asientos/liberar/${numero}`);
-      alert(response.data.message); // Mostrar mensaje del backend
+      alert(response.data.message); 
       setAsientos((prev) =>
         prev.map((asiento) =>
           asiento.Numero === numero
