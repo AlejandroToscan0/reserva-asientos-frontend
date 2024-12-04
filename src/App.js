@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";  // Importa el archivo CSS que acabamos de crear
 
 const App = () => {
   const [asientos, setAsientos] = useState([]); // Estado inicial vacío para los asientos
@@ -23,8 +24,7 @@ const App = () => {
   // Reservar un asiento
   const reservarAsiento = async (numero) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/asientos/reservar", {
-        numero,
+      const response = await axios.post(`http://localhost:3000/api/asientos/reservar/${numero}`, {
         reservadoPor: "Usuario",
       });
       alert(response.data.message); // Mostrar mensaje del backend
@@ -44,9 +44,7 @@ const App = () => {
   // Liberar un asiento
   const liberarAsiento = async (numero) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/asientos/liberar", {
-        numero,
-      });
+      const response = await axios.post(`http://localhost:3000/api/asientos/liberar/${numero}`);
       alert(response.data.message); // Mostrar mensaje del backend
       setAsientos((prev) =>
         prev.map((asiento) =>
@@ -68,18 +66,23 @@ const App = () => {
         {asientos.map((asiento) => (
           <div key={asiento.Numero} className="col-md-3 col-sm-6 mb-3">
             <button
-              className={`btn btn-block ${
-                asiento.Disponible ? "btn-success" : "btn-danger"
-              }`}
+              className={`btn-asiento ${asiento.Disponible ? "disponible" : "ocupado"}`}
               onClick={() =>
                 asiento.Disponible
                   ? reservarAsiento(asiento.Numero)
                   : liberarAsiento(asiento.Numero)
               }
             >
-              {asiento.Disponible
-                ? `Asiento ${asiento.Numero}`
-                : `Reservado (${asiento.reservadoPor || "N/A"})`}
+              <h5>
+                {asiento.Disponible ? (
+                  `Asiento ${asiento.Numero} Disponible`
+                ) : (
+                  <>
+                    Reservado <br />
+                    <small>{asiento.reservadoPor || "Sin nombre"}</small>
+                  </>
+                )}
+              </h5>
             </button>
           </div>
         ))}

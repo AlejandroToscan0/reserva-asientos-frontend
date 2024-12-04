@@ -31,9 +31,11 @@ app.get("/api/asientos", (req, res) => {
   });
 });
 
-// Ruta para reservar un asiento
-app.post("/api/asientos/reservar", (req, res) => {
-  const { numero, reservadoPor } = req.body;
+// Ruta para reservar un asiento por número
+app.post("/api/asientos/reservar/:numero", (req, res) => {
+  const { numero } = req.params; // Número del asiento de la URL
+  const { reservadoPor } = req.body; // Nombre del usuario desde el body
+
   db.query(
     "UPDATE asientos SET disponible = 0, reservadoPor = ? WHERE Numero = ?",
     [reservadoPor, numero],
@@ -41,20 +43,28 @@ app.post("/api/asientos/reservar", (req, res) => {
       if (err) {
         return res.status(500).send("Error al reservar el asiento");
       }
+      if (results.affectedRows === 0) {
+        return res.status(404).send("El asiento no existe o ya está reservado");
+      }
       res.json({ message: "Asiento reservado correctamente" });
     }
   );
 });
 
-// Ruta para liberar un asiento
-app.post("/api/asientos/liberar", (req, res) => {
-  const { numero } = req.body;
+
+// Ruta para liberar un asiento por número
+app.post("/api/asientos/liberar/:numero", (req, res) => {
+  const { numero } = req.params;  // Usar el parámetro de la URL
+
   db.query(
     "UPDATE asientos SET disponible = 1, reservadoPor = NULL WHERE Numero = ?",
     [numero],
     (err, results) => {
       if (err) {
         return res.status(500).send("Error al liberar el asiento");
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).send("El asiento no existe o no está reservado");
       }
       res.json({ message: "Asiento liberado correctamente" });
     }
